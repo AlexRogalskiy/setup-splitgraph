@@ -1,5 +1,11 @@
 #!/bin/bash -e
 
+SPLITGRAPH_DEPLOYMENT_URL=$1
+shift
+SPLITGRAPH_API_KEY=$1
+shift
+SPLITGRAPH_API_SECRET=$1
+
 # TODO this is a PEX just to get this working; use the PyInstaller release or let people
 #  choose a pip install?
 SGR_URL=https://raw.githubusercontent.com/splitgraph/setup-splitgraph/master/sgr
