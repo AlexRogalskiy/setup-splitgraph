@@ -1,0 +1,21 @@
+name: 'Setup Splitgraph client'
+description: 'Set up the sgr CLI to manipulate datasets / jobs on remote Splitgraph instances, for example, triggering data loads, dbt projects etc.'
+inputs:
+  splitgraph_deployment_url:
+    description: "URL to the Splitgraph deployment. Defaults to splitgraph.com."
+    default: "splitgraph.com"
+    required: false
+  splitgraph_api_key:
+    description: "Splitgraph API key. Will log into Splitgraph if specified. You can generate a key pair at https://www.splitgraph.com/settings/sql-credentials (use your deployment domain instead of splitgraph.com on private deployments)."
+    required: false
+  splitgraph_api_secret:
+    description: "Splitgraph API secret."
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.9
+    - run: ${{ github.action_path }}/setup_splitgraph.sh
+      shell: bash
