@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
 SPLITGRAPH_DEPLOYMENT_URL=$1
-shift
 
 if [[ $# -ge 2 ]]; then
   shift
@@ -15,7 +14,7 @@ fi
 SGR_URL=https://raw.githubusercontent.com/splitgraph/setup-splitgraph/master/sgr
 
 echo "Downloading sgr from $SGR_URL..."
-wget --quiet https://raw.githubusercontent.com/splitgraph/setup-splitgraph/master/sgr
+wget https://raw.githubusercontent.com/splitgraph/setup-splitgraph/master/sgr
 chmod +x sgr
 
 echo "Adding sgr to \$PATH..."
