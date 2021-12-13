@@ -2,9 +2,13 @@
 
 SPLITGRAPH_DEPLOYMENT_URL=$1
 shift
-SPLITGRAPH_API_KEY=$1
-shift
-SPLITGRAPH_API_SECRET=$1
+
+if [[ $# -ge 2 ]]; then
+  shift
+  SPLITGRAPH_API_KEY=$1
+  shift
+  SPLITGRAPH_API_SECRET=$1
+fi
 
 # TODO this is a PEX just to get this working; use the PyInstaller release or let people
 #  choose a pip install?
