@@ -17,5 +17,7 @@ runs:
     - uses: actions/setup-python@v1
       with:
         python-version: 3.9
-    - run: ${{ github.action_path }}/setup_splitgraph.sh ${{ inputs.splitgraph_deployment_url }} ${{ inputs.splitgraph_api_key }} ${{ inputs.splitgraph_api_secret }}
+    - run: |
+        ${{ github.action_path }}/setup_splitgraph.sh ${{ inputs.splitgraph_deployment_url }} ${{ inputs.splitgraph_api_key }} ${{ inputs.splitgraph_api_secret }}
+        echo "$PWD" >> $GITHUB_PATH
       shell: bash
