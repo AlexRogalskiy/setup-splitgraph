@@ -17,8 +17,13 @@ echo "Downloading sgr from $SGR_URL..."
 wget https://raw.githubusercontent.com/splitgraph/setup-splitgraph/master/sgr
 chmod +x sgr
 
+mkdir -p "$HOME/.local/bin"
+mv sgr "$HOME/.local/bin/sgr"
 echo "Adding sgr to \$PATH..."
-export PATH=$PATH:$GITHUB_ACTION_PATH
+
+# Add sgr to the PATH for this action and future actions.
+export PATH=$PATH:"$HOME/.local/bin"
+echo "$HOME/.local/bin" >> $GITHUB_PATH
 
 echo "Setting up $SPLITGRAPH_DEPLOYMENT_URL"
 sgr cloud add --remote splitgraph "$SPLITGRAPH_DEPLOYMENT_URL"
