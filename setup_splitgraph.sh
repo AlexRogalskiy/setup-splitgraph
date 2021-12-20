@@ -1,6 +1,10 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -eo pipefail
 
 SPLITGRAPH_DEPLOYMENT_URL=$1
+SGR_VERSION=${SGR_VERSION-latest}
+INSTALL_DIR=${INSTALL_DIR-$HOME/.local/bin}
 
 if [[ $# -ge 2 ]]; then
   shift
@@ -9,21 +13,45 @@ if [[ $# -ge 2 ]]; then
   SPLITGRAPH_API_SECRET=$1
 fi
 
-# TODO this is a PEX just to get this working; use the PyInstaller release or let people
-#  choose a pip install?
-SGR_URL=https://raw.githubusercontent.com/splitgraph/setup-splitgraph/master/sgr
+_get_binary_name() {
+  os=$(uname)
+  architecture=$(uname -m)
 
-echo "Downloading sgr from $SGR_URL..."
-wget https://raw.githubusercontent.com/splitgraph/setup-splitgraph/master/sgr
-chmod +x sgr
+  if [ "$architecture" != x86_64 ]; then
+    _die "Single binary method method only supported on x64 architectures. Please see https://www.splitgraph.com/docs/installation/ for other installation methods."
+  fi
 
-mkdir -p "$HOME/.local/bin"
-mv sgr "$HOME/.local/bin/sgr"
-echo "Adding sgr to \$PATH..."
+  if [ "$os" == Linux ]; then
+    BINARY="sgr-linux-x86_64"
+  elif [ "$os" == Darwin ]; then
+    BINARY="sgr-osx-x86_64"
+  else
+    _die "This installation method only supported on Linux/OSX. Please see https://www.splitgraph.com/docs/installation/ for other installation methods."
+  fi
+}
+
+_install_binary () {
+  if [[ $SGR_VERSION == "latest" ]]; then
+    URL="https://github.com/splitgraph/splitgraph/releases/latest/download/$BINARY"
+  else
+    URL="https://github.com/splitgraph/splitgraph/releases/download/$SGR_VERSION/$BINARY"
+  fi
+  echo "Installing the sgr binary from $URL into $INSTALL_DIR"
+  mkdir -p "$INSTALL_DIR"
+  curl -fsL "$URL" > "$INSTALL_DIR/sgr"
+  chmod +x "$INSTALL_DIR/sgr"
+  "$INSTALL_DIR/sgr" --version
+  echo "sgr binary installed."
+  echo
+}
+
+_get_binary_name
+_install_binary
 
 # Add sgr to the PATH for this action and future actions.
-export PATH=$PATH:"$HOME/.local/bin"
-echo "$HOME/.local/bin" >> $GITHUB_PATH
+echo "Adding sgr to \$PATH..."
+export PATH=$PATH:"$INSTALL_DIR"
+echo "$INSTALL_DIR" >> $GITHUB_PATH
 
 echo "Setting up $SPLITGRAPH_DEPLOYMENT_URL"
 sgr cloud add --remote splitgraph "$SPLITGRAPH_DEPLOYMENT_URL"

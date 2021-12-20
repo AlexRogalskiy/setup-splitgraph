@@ -11,12 +11,15 @@ inputs:
   splitgraph_api_secret:
     description: "Splitgraph API secret."
     required: false
+  sgr_version:
+    description: "Version of sgr to download, e.g. 0.3.0"
+    default: "latest"
+    required: false
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-python@v1
-      with:
-        python-version: 3.9
     - run: |
         ${{ github.action_path }}/setup_splitgraph.sh ${{ inputs.splitgraph_deployment_url }} ${{ inputs.splitgraph_api_key }} ${{ inputs.splitgraph_api_secret }}
       shell: bash
+      env:
+        SGR_VERSION: ${{ inputs.sgr_version }}
