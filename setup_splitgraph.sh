@@ -13,6 +13,21 @@ if [[ $# -ge 2 ]]; then
   SPLITGRAPH_API_SECRET=$1
 fi
 
+if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+  bold=$(tput bold)
+  blue=$(tput setaf 4)
+  bblue=$(tput bold)${blue}
+  end=$(tput sgr0)
+  cyan=$(tput setaf 6)
+  red=$(tput setaf 1)
+  green=$(tput setaf 2)
+fi
+
+_die() {
+  echo "${red}Fatal:${end} $@"
+  exit 1
+}
+
 _get_binary_name() {
   os=$(uname)
   architecture=$(uname -m)
